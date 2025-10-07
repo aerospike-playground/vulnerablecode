@@ -4,15 +4,23 @@ on:
     # run daily at 10:00am
     - cron: '0 10 * * *'
 
+permissions:
+  contents: read
+
 jobs:
   nix-check-and-import:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
         with:
           fetch-depth: 0
-      - uses: cachix/install-nix-action@v11
+      - uses: cachix/install-nix-action@95a8068e317b8def9482980abe762f36c77ccc99 # v11
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
         with:
